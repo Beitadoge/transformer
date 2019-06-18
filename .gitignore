@@ -103,3 +103,4 @@ logdir
 preprocessed
 /iwslt2016/
 /log/
+/.vscode/
