@@ -266,7 +266,7 @@ def positional_encoding(inputs,
                         masking=True,
                         scope="positional_encoding"):
     '''Sinusoidal Positional_Encoding. See 3.5
-    inputs: 3d tensor. (N, T, E)
+    inputs: 3d tensor. (N, T, E) 
     maxlen: scalar. Must be >= T
     masking: Boolean. If True, padding positions are set to zeros.
     scope: Optional scope for `variable_scope`.
@@ -275,8 +275,8 @@ def positional_encoding(inputs,
     3d tensor that has the same shape as inputs.
     '''
 
-    E = inputs.get_shape().as_list()[-1] # static
-    N, T = tf.shape(inputs)[0], tf.shape(inputs)[1] # dynamic
+    E = inputs.get_shape().as_list()[-1] # static embedding_size
+    N, T = tf.shape(inputs)[0], tf.shape(inputs)[1] # dynamic N:batch_size,T:sequence_len
     with tf.variable_scope(scope, reuse=tf.AUTO_REUSE):
         # position indices
         position_ind = tf.tile(tf.expand_dims(tf.range(T), 0), [N, 1]) # (N, T)
@@ -284,7 +284,7 @@ def positional_encoding(inputs,
         # First part of the PE function: sin and cos argument
         position_enc = np.array([
             [pos / np.power(10000, (i-i%2)/E) for i in range(E)]
-            for pos in range(maxlen)])
+            for pos in range(maxlen)]) # [maxlen,embedding_size]
 
         # Second part, apply the cosine to even columns and sin to odds.
         position_enc[:, 0::2] = np.sin(position_enc[:, 0::2])  # dim 2i
@@ -296,7 +296,7 @@ def positional_encoding(inputs,
 
         # masks
         if masking:
-            outputs = tf.where(tf.equal(inputs, 0), inputs, outputs)
+            outputs = tf.where(tf.equal(inputs, 0), inputs, outputs) #没看懂
 
         return tf.to_float(outputs)
 

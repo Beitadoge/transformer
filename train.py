@@ -23,7 +23,7 @@ logging.info("# hparams")
 hparams = Hparams()
 parser = hparams.parser
 hp = parser.parse_args()
-save_hparams(hp, hp.logdir)
+save_hparams(hp, hp.logdir)#保存超参数设置
 
 logging.info("# Prepare train/eval batches")
 train_batches, num_train_batches, num_train_samples = get_batch(hp.train1, hp.train2,
@@ -39,11 +39,12 @@ eval_batches, num_eval_batches, num_eval_samples = get_batch(hp.eval1, hp.eval2,
 iter = tf.data.Iterator.from_structure(train_batches.output_types, train_batches.output_shapes)
 xs, ys = iter.get_next()
 
+
 train_init_op = iter.make_initializer(train_batches)
 eval_init_op = iter.make_initializer(eval_batches)
 
 logging.info("# Load model")
-m = Transformer(hp)
+m = Transformer(hp) #搭建模型
 loss, train_op, global_step, train_summaries = m.train(xs, ys)
 y_hat, eval_summaries = m.eval(xs, ys)
 # y_hat = m.infer(xs, ys)

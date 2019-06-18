@@ -33,7 +33,7 @@ class Transformer:
     def __init__(self, hp):
         self.hp = hp
         self.token2idx, self.idx2token = load_vocab(hp.vocab)
-        self.embeddings = get_token_embeddings(self.hp.vocab_size, self.hp.d_model, zero_pad=True)
+        self.embeddings = get_token_embeddings(self.hp.vocab_size, self.hp.d_model, zero_pad=True)#矩阵大小为:[vocab_size,d_model],随机初始化，但是当zero_pad=True时，矩阵第一行全为0.
 
     def encode(self, xs, training=True):
         '''
@@ -45,7 +45,7 @@ class Transformer:
 
             # embedding
             enc = tf.nn.embedding_lookup(self.embeddings, x) # (N, T1, d_model)
-            enc *= self.hp.d_model**0.5 # scale
+            enc *= self.hp.d_model**0.5 # scale，为什么这里也需要归一化???
 
             enc += positional_encoding(enc, self.hp.maxlen1)
             enc = tf.layers.dropout(enc, self.hp.dropout_rate, training=training)
