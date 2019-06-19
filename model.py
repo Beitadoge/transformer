@@ -41,12 +41,13 @@ class Transformer:
         memory: encoder outputs. (N, T1, d_model)
         '''
         with tf.variable_scope("encoder", reuse=tf.AUTO_REUSE):
-            x, seqlens, sents1 = xs
+            x, seqlens, sents1 = xs # x : [N,T1] T1:每条句子的单词数
 
             # embedding
-            enc = tf.nn.embedding_lookup(self.embeddings, x) # (N, T1, d_model)
+            enc = tf.nn.embedding_lookup(self.embeddings, x) # (N, T1, Embedding_size) 论文中：Embedding_size=d_model
             enc *= self.hp.d_model**0.5 # scale，为什么这里也需要归一化???
 
+            # positional_encoding
             enc += positional_encoding(enc, self.hp.maxlen1)
             enc = tf.layers.dropout(enc, self.hp.dropout_rate, training=training)
 

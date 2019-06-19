@@ -47,7 +47,8 @@ from ipdb import set_trace
 set_trace()
 
 logging.info("# Load model")
-m = Transformer(hp) #搭建模型
+#搭建模型
+m = Transformer(hp)
 loss, train_op, global_step, train_summaries = m.train(xs, ys)
 y_hat, eval_summaries = m.eval(xs, ys)
 # y_hat = m.infer(xs, ys)
