@@ -177,8 +177,9 @@ def multihead_attention(queries, keys, values,
     '''
     d_model = queries.get_shape().as_list()[-1]
     with tf.variable_scope(scope, reuse=tf.AUTO_REUSE):
+        
         # Linear projections
-        Q = tf.layers.dense(queries, d_model, use_bias=False) # (N, T_q, d_model)
+        Q = tf.layers.dense(queries, d_model, use_bias=False) # (N, T_q, d_model) 为什么不用激活函数,差距大吗
         K = tf.layers.dense(keys, d_model, use_bias=False) # (N, T_k, d_model)
         V = tf.layers.dense(values, d_model, use_bias=False) # (N, T_k, d_model)
         
@@ -186,6 +187,7 @@ def multihead_attention(queries, keys, values,
         Q_ = tf.concat(tf.split(Q, num_heads, axis=2), axis=0) # (h*N, T_q, d_model/h)
         K_ = tf.concat(tf.split(K, num_heads, axis=2), axis=0) # (h*N, T_k, d_model/h)
         V_ = tf.concat(tf.split(V, num_heads, axis=2), axis=0) # (h*N, T_k, d_model/h)
+
 
         # Attention
         outputs = scaled_dot_product_attention(Q_, K_, V_, causality, dropout_rate, training)

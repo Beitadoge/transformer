@@ -20,9 +20,9 @@ logging.basicConfig(level=logging.INFO)
 class Transformer:
     '''
     xs: tuple of
-        x: int32 tensor. (N, T1)
-        x_seqlens: int32 tensor. (N,)
-        sents1: str tensor. (N,)
+        x: int32 tensor. (N, T1) 编码后的句子,T1意思是sequence长度(padding后的)
+        x_seqlens: int32 tensor. (N,) 保存着的每个sequence的实际长度(没有padding后的)
+        sents1: str tensor. (N,) 未编码的句子
     ys: tuple of
         decoder_input: int32 tensor. (N, T2)
         y: int32 tensor. (N, T2)

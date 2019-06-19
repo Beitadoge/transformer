@@ -125,17 +125,17 @@ def input_fn(sents1, sents2, vocab_fpath, batch_size, shuffle=False):
         dataset = dataset.shuffle(128*batch_size)
 
     dataset = dataset.repeat()  # iterate forever
-    dataset = dataset.padded_batch(batch_size, shapes, paddings).prefetch(1)
+    dataset = dataset.padded_batch(batch_size, shapes, paddings).prefetch(1) #???
 
     return dataset
 
 def get_batch(fpath1, fpath2, maxlen1, maxlen2, vocab_fpath, batch_size, shuffle=False):
     '''Gets training / evaluation mini-batches
-    fpath1: source file path. string.
-    fpath2: target file path. string.
+    fpath1: source file path. string. iwslt2016/segmented/train.de.bpe
+    fpath2: target file path. string. iwslt2016/segmented/train.en.bpe
     maxlen1: source sent maximum length. scalar.
     maxlen2: target sent maximum length. scalar.
-    vocab_fpath: string. vocabulary file path.
+    vocab_fpath: string. vocabulary file path. iwslt2016/segmented/bpe.vocab
     batch_size: scalar
     shuffle: boolean
 

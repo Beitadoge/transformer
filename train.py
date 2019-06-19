@@ -43,6 +43,9 @@ xs, ys = iter.get_next()
 train_init_op = iter.make_initializer(train_batches)
 eval_init_op = iter.make_initializer(eval_batches)
 
+from ipdb import set_trace
+set_trace()
+
 logging.info("# Load model")
 m = Transformer(hp) #搭建模型
 loss, train_op, global_step, train_summaries = m.train(xs, ys)
