@@ -16,6 +16,7 @@ from hparams import Hparams
 import math
 import logging
 
+tf.device('/gpu:3')
 logging.basicConfig(level=logging.INFO)
 
 
@@ -43,8 +44,6 @@ xs, ys = iter.get_next()
 train_init_op = iter.make_initializer(train_batches)
 eval_init_op = iter.make_initializer(eval_batches)
 
-from ipdb import set_trace
-set_trace()
 
 logging.info("# Load model")
 #搭建模型

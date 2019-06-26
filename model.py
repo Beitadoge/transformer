@@ -64,7 +64,7 @@ class Transformer:
                                               causality=False)
                     # feed forward
                     enc = ff(enc, num_units=[self.hp.d_ff, self.hp.d_model])
-        memory = enc
+        memory = enc #(N, T1, d_model)
         return memory, sents1
 
     def decode(self, ys, memory, training=True):
@@ -78,6 +78,14 @@ class Transformer:
         sents2: (N,). string.
         '''
         with tf.variable_scope("decoder", reuse=tf.AUTO_REUSE):
+            """
+            假设 batch_size = 2
+            decoder_inputs : [[2,1,2,3,0,0],[2,5,4,3,2,1]]
+            y : [[2,1,2,3,0,0],[2,5,4,3,2,1]]
+            seqlens : [3,5]
+            sents2 : [b"\xe2\x96\x81how \xe2\x96\x81are \xe2\x96\x81you" ,
+                      b"\xe2\x96\x81I \xe2\x96\x81am \xe2\x96\x81happy \xe2\x96\x81very \xe2\x96\x81much"]
+            """
             decoder_inputs, y, seqlens, sents2 = ys
 
             # embedding
@@ -115,7 +123,7 @@ class Transformer:
         # Final linear projection (embedding weights are shared)
         weights = tf.transpose(self.embeddings) # (d_model, vocab_size)
         logits = tf.einsum('ntd,dk->ntk', dec, weights) # (N, T2, vocab_size)
-        y_hat = tf.to_int32(tf.argmax(logits, axis=-1))
+        y_hat = tf.to_int32(tf.argmax(logits, axis=-1)) # (N,T2)
 
         return logits, y_hat, y, sents2
 
@@ -138,7 +146,7 @@ class Transformer:
         loss = tf.reduce_sum(ce * nonpadding) / (tf.reduce_sum(nonpadding) + 1e-7)
 
         global_step = tf.train.get_or_create_global_step()
-        lr = noam_scheme(self.hp.lr, global_step, self.hp.warmup_steps)
+        lr = noam_scheme(self.hp.lr, global_step, self.hp.warmup_steps) #学习率进程表
         optimizer = tf.train.AdamOptimizer(lr)
         train_op = optimizer.minimize(loss, global_step=global_step)
 
@@ -158,7 +166,7 @@ class Transformer:
         '''
         decoder_inputs, y, y_seqlen, sents2 = ys
 
-        decoder_inputs = tf.ones((tf.shape(xs[0])[0], 1), tf.int32) * self.token2idx["<s>"]
+        decoder_inputs = tf.ones((tf.shape(xs[0])[0], 1), tf.int32) * self.token2idx["<s>"] #(N,1)
         ys = (decoder_inputs, y, y_seqlen, sents2)
 
         memory, sents1 = self.encode(xs, False)
