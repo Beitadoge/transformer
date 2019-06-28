@@ -21,7 +21,7 @@ def load_vocab(vocab_fpath):
     Returns
     two dictionaries.
     '''
-    vocab = [line.split()[0] for line in open(vocab_fpath, 'r').read().splitlines()]
+    vocab = [line.split()[0] for line in open(vocab_fpath, 'r').read().splitlines()] #按照行('\r', '\r\n', \n')分隔，返回一个包含各行作为元素的列表
     token2idx = {token: idx for idx, token in enumerate(vocab)}
     idx2token = {idx: token for idx, token in enumerate(vocab)}
     return token2idx, idx2token
